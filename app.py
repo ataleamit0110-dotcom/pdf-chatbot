@@ -14,7 +14,8 @@ load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 st.title("📄 PDF Q&A Chatbot")
-
+llm_model = os.getenv("LLM_MODEL")
+embedding_model_name = os.getenv("EMBEDDING_MODEL")
 loader = PyMuPDFLoader("Amit_Atale_AI_Resume.pdf")
 documents = loader.load()
 
@@ -26,7 +27,7 @@ text_splitter = CharacterTextSplitter(
 docs = text_splitter.split_documents(documents)
 
 embedding_model = HuggingFaceEmbeddings(
-    model_name="all-MiniLM-L6-v2"
+    model_name=embedding_model_name
 )
 
 vector_db = FAISS.from_documents(
@@ -57,7 +58,7 @@ Answer:
 """
 
     response = client.chat.completions.create(
-        model="gpt-4.1-mini",
+        model=llm_model,
         messages=[
             {"role": "user", "content": prompt}
         ],
